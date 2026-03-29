@@ -145,11 +145,14 @@ func gitCredentials(ctx context.Context, repoURL string) (username, password str
 	if err != nil {
 		return "", "", err
 	}
-	input := strings.Join([]string{
+	parts := []string{
 		"protocol=" + u.Scheme,
 		"host=" + u.Host,
-		"path=" + u.Path,
-	}, "\n") + "\n" // `git credential` wants a trailing newline
+	}
+	if u.Path != "" {
+		parts = append(parts, "path="+u.Path)
+	}
+	input := strings.Join(parts, "\n") + "\n" // `git credential` wants a trailing newline
 	cmd := exec.CommandContext(ctx, "git", "credential", "fill")
 	cmd.Stdin = strings.NewReader(input)
 	outputBytes, err := cmd.Output()
@@ -176,8 +179,8 @@ func gitCredentials(ctx context.Context, repoURL string) (username, password str
 		case "password":
 			password = val
 		default:
-			// Could happen if the user configured an auth mechanism we don't support, like oauth.
-			return "", "", fmt.Errorf("unknown output line key: %q", line)
+			// Ignore extra fields (e.g. password_expiry_utc, oauth_token)
+			// that modern credential helpers may emit.
 		}
 	}
 	return username, password, nil
