@@ -30,12 +30,12 @@ func TestParseSlackURL(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			url:     "https://cuelang.slack.com/archives/C012UU8B72M/p1772986989323289",
+			url:     "https://example.slack.com/archives/C012UU8B72M/p1772986989323289",
 			channel: "C012UU8B72M",
 			ts:      "1772986989.323289",
 		},
 		{
-			url:     "https://cuelang.slack.com/archives/C01234ABCDE/p1234567890123456",
+			url:     "https://example.slack.com/archives/C01234ABCDE/p1234567890123456",
 			channel: "C01234ABCDE",
 			ts:      "1234567890.123456",
 		},
@@ -149,10 +149,6 @@ func TestMCPToolsRegistered(t *testing.T) {
 
 	// Register the same tools as runMCP does.
 	mcp.AddTool(server, &mcp.Tool{
-		Name:        "slack_thread",
-		Description: "Fetch a Slack thread.",
-	}, handleSlackThread)
-	mcp.AddTool(server, &mcp.Tool{
 		Name:        "discord_thread",
 		Description: "Fetch a Discord thread.",
 	}, handleDiscordThread)
@@ -204,7 +200,6 @@ func TestMCPToolsRegistered(t *testing.T) {
 	}
 
 	wantTools := map[string]bool{
-		"slack_thread":        false,
 		"discord_thread":      false,
 		"gerrit_comments":     false,
 		"gerrit_reply":        false,

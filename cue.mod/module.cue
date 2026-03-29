@@ -1,4 +1,4 @@
-module: "github.com/cue-lang/contrib-tools"
+module: "github.com/EduWarp/contrib-tools"
 language: {
 	version: "v0.16.0"
 }

@@ -42,15 +42,6 @@ func TestPayloads(t *testing.T) {
 			Ref:          "refs/changes/52/551352/140",
 			TargetBranch: "master",
 		})),
-		"unity_versions": must(buildUnityPayload("hello", unityPayload{
-			Versions: "\"v0.3.0-beta.5\"",
-		})),
-		"unity_cl": must(buildUnityPayloadFromCLTrigger(repositoryDispatchPayload{
-			CL:           54321,
-			Patchset:     24,
-			Ref:          "refs/changes/25/551325/14",
-			TargetBranch: "master",
-		})),
 	}
 
 	for key, dro := range testCases {

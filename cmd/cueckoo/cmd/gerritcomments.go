@@ -27,7 +27,7 @@ import (
 	"strings"
 )
 
-const gerritBase = "https://cue.gerrithub.io"
+const gerritBase = "https://review.gerrithub.io"
 
 // fetchGerritComments fetches review comments from a GerritHub change
 // and returns them formatted, grouped by thread with resolved state.

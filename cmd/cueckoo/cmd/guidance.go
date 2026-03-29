@@ -15,11 +15,11 @@
 package cmd
 
 // commonGuidance is the canonical set of instructions shared across all
-// CUE project repos. It is returned by the "guidance" MCP tool and can
+// EduWarp project repos. It is returned by the "guidance" MCP tool and can
 // be used to keep per-repo CLAUDE.md files in sync.
-const commonGuidance = `# CUE Project — Common Guidance
+const commonGuidance = `# EduWarp Project — Common Guidance
 
-This guidance applies to all repositories in the CUE project. It is
+This guidance applies to all repositories in the EduWarp project. It is
 served by the cueckoo MCP server and should be incorporated into each
 repo's CLAUDE.md.
 
@@ -28,12 +28,11 @@ repo's CLAUDE.md.
 Commit messages follow specific conventions. The first line is a short
 summary prefixed by the primary affected package or area, e.g.:
 
-    cue/ast/astutil: fix scope resolution for let clauses in comprehensions
-    cmd/cue: add --out flag to export for controlling output format
-    internal/core/adt: reduce allocations during unification of large structs
+    pkg/auth: fix token expiry check for refresh tokens
+    cmd/server: add --port flag for configuring listen address
+    internal/db: reduce allocations during query result mapping
 
-The first line should complete the sentence "This change modifies CUE
-to ___." — it does not start with a capital letter, is not a complete
+The first line should not start with a capital letter, is not a complete
 sentence, and summarises the result of the change.
 
 Follow the first line with a blank line, then a description that
@@ -41,12 +40,10 @@ provides context and explains what the change does. Write in complete
 sentences with correct punctuation. Do not use markdown or other markup.
 
 Additional conventions:
-- Include a Signed-off-by line (use git commit -s or git codereview
-  change -s) to assert the Developer Certificate of Origin
 - No AI authorship attribution in commit messages
 - Reference issues with "Fixes #NNN" (closes the issue on submit) or
   "Updates #NNN" (links without closing). For subrepositories, use
-  the fully-qualified form: "Fixes cue-lang/cue#NNN"
+  the fully-qualified form: "Fixes EduWarp/<repo>#NNN"
 - All commits must include a Change-Id trailer. The Change-Id is
   what GerritHub uses to uniquely identify a change — see
   "Preserving Change-Ids" below. IMPORTANT: never write or invent a
@@ -57,24 +54,24 @@ Additional conventions:
 
 ## Code Review
 
-All CUE project repos use GerritHub for code review. Both GerritHub
+All EduWarp project repos use GerritHub for code review. Both GerritHub
 CLs and GitHub PRs are supported workflows.
 
 Repos that use GerritHub have a codereview.cfg file in the repository
 root. This file identifies the GerritHub instance (which must match
 the origin remote) and the GitHub mirror:
 
-    gerrit: https://cue.gerrithub.io/a/cue-lang/<repo>
-    github: https://github.com/cue-lang/<repo>
+    gerrit: https://review.gerrithub.io/a/EduWarp/<repo>
+    github: https://github.com/EduWarp/<repo>
 
 GerritHub is the source of truth; GitHub is a mirror.
 
 ### git-codereview
 
-CUE projects use git-codereview (golang.org/x/review/git-codereview)
-for managing Gerrit changes. It is installed on all CUE maintainer
-machines and available as "git codereview" (a git subcommand). Use it
-for all Gerrit interactions — do not use raw git push to Gerrit.
+EduWarp projects use git-codereview (golang.org/x/review/git-codereview)
+for managing Gerrit changes. It is available as "git codereview" (a git
+subcommand). Use it for all Gerrit interactions — do not use raw git
+push to Gerrit.
 
 IMPORTANT: when comparing a branch against its upstream base, always
 use @{u} (git shorthand for the upstream tracking branch) rather than
@@ -97,7 +94,7 @@ Key commands (use "git codereview <command> -h" for full usage):
 ### GerritHub workflow
 
 - Create a work branch: git codereview change my-branch
-- Stage changes and create a commit: git codereview change -a -s
+- Stage changes and create a commit: git codereview change -a
 - Send for review: git codereview mail
 - The Change-Id trailer links commits to GerritHub changes — it is
   added automatically by git codereview hooks
@@ -180,8 +177,7 @@ a branch from scratch. If you reset a branch and recreate commits
 (rather than using git codereview rebase-work), you must ensure the
 resulting stack of commits keeps the same Change-Ids as the starting
 state. Before any such operation, note the Change-Id of each pending
-commit (via git log) and verify they are
-unchanged afterwards.
+commit (via git log) and verify they are unchanged afterwards.
 
 The safest approach is to use git codereview rebase-work for editing
 commits within a chain, as it preserves Change-Ids automatically.
@@ -223,8 +219,7 @@ relevant code rather than relying on exact line numbers.
 
 Before making any changes, first determine which commit the feedback
 applies to. A branch may have multiple pending commits, each a
-separate CL. Use git log @{u}..HEAD to see
-the full stack.
+separate CL. Use git log @{u}..HEAD to see the full stack.
 
 IMPORTANT: do not edit files or stage changes until you are
 positioned at the correct commit. If the target commit is not at
@@ -245,13 +240,13 @@ edit the working tree and run git codereview change.
 
 ## CI (trybots)
 
-IMPORTANT: in the CUE project, "tests" always refers to running the
+IMPORTANT: in the EduWarp project, "tests" always refers to running the
 project's test suite locally (e.g. "go test ./..."). Remote CI is
 always referred to as "trybots". If someone says "the tests are
 failing", they mean locally — if they meant CI, they would say
 "the trybots are failing".
 
-CUE projects run CI via cueckoo runtrybot, not through Gerrit labels.
+EduWarp projects run CI via cueckoo runtrybot, not through Gerrit labels.
 
     cueckoo runtrybot
 
@@ -262,7 +257,6 @@ for all of them.
 
 Flags:
   -f, --force     force the trybots to run, ignoring any results
-  --nounity       do not simultaneously trigger a unity build
 
 Requires a GitHub username and classic personal access token with the
 "repo" scope, configured via a git credential helper or the GITHUB_USER
@@ -270,47 +264,28 @@ and GITHUB_PAT environment variables.
 
 ## Community
 
-The CUE community uses Slack, Discord, and GitHub Discussions:
-
-- Slack: CUE community workspace (https://cuelang.slack.com)
-- Discord: CUE Discord server
-- GitHub Discussions: https://github.com/cue-lang/cue/discussions
-
-Use the slack_thread and discord_thread MCP tools to fetch conversation
-context when helping with community questions.
+The EduWarp project uses Discord and GitHub Discussions for community
+support. Use the discord_thread MCP tool to fetch conversation context
+when helping with community questions.
 
 When drafting responses:
 - Output as raw markdown suitable for copy-paste into the target
   platform
-- Include working CUE examples where helpful
 - Keep answers concise but complete
 
 ## Testing and Reproductions
 
-When investigating CUE behaviour or community-reported issues, create
-standalone .txtar reproduction files using testscript format. The
-testscript CLI used is github.com/rogpeppe/go-internal/cmd/testscript.
-The txtar format is a trivial text-based file archive where files are
-delimited by "-- filename --" markers. Commands precede the archive
-section.
+When investigating behaviour or reported issues, create standalone
+.txtar reproduction files using testscript format. The testscript CLI
+used is github.com/rogpeppe/go-internal/cmd/testscript. The txtar
+format is a trivial text-based file archive where files are delimited
+by "-- filename --" markers. Commands precede the archive section.
 
 Running reproductions:
 
     testscript repro.txtar       # Run a reproduction
     testscript -v repro.txtar    # Verbose output
     testscript -u repro.txtar    # Auto-update golden files
-
-Reproductions can also be piped via stdin:
-
-    testscript <<'EOD'
-    exec cue def
-    -- cue.mod/module.cue --
-    module: "mod.com"
-    -- x.cue --
-    package x
-    a: 41
-    a: 42
-    EOD
 
 Use the cmp command within testscript to validate output against
 golden files — the tool displays diffs when output diverges.
@@ -326,9 +301,6 @@ Conventions for txtar reproductions:
 - Include expected output for validation using cmp
 - Reference specific commit hashes, not branch names
 
-See https://github.com/cue-lang/cue/wiki/Creating-test-or-performance-reproducers
-for full details.
-
 ## Copyright Headers
 
 Files do not list author names. New files should use the standard
@@ -337,7 +309,7 @@ the copyright year for existing files that you change.
 
 ## CLAUDE.md structure
 
-Each CUE project repo should have a CLAUDE.md file at its root. The
+Each EduWarp project repo should have a CLAUDE.md file at its root. The
 file should start by bootstrapping from the common guidance provided
 by the cueckoo MCP server's guidance tool, then add any repo-specific
 instructions. For example:
@@ -347,7 +319,7 @@ instructions. For example:
     ## Common guidance
 
     Use the cueckoo MCP server's guidance tool to get the latest common
-    guidance for CUE project repos. The server is registered as the
+    guidance for EduWarp project repos. The server is registered as the
     cueckoo MCP server (via cueckoo mcp). Follow all instructions
     returned by the guidance tool.
 
@@ -365,7 +337,7 @@ If in the course of following this guidance you find it to be
 incorrect, misleading, incomplete, or have suggestions for how it
 could be improved, prompt the user to raise an issue at:
 
-    https://github.com/cue-lang/cue/issues
+    https://github.com/EduWarp/contrib-tools/issues
 
 Use a "contrib-tools:" subject prefix and describe the problem with
 the current guidance and the suggested improvement. This is a public

@@ -66,7 +66,7 @@ func New(args []string) (cmd *Command, err error) {
 func newRootCmd() *Command {
 	cmd := &cobra.Command{
 		Use:          "cueckoo",
-		Short:        "cueckoo is a development tool for working with the CUE project",
+		Short:        "cueckoo is a development tool for working with the EduWarp project",
 		SilenceUsage: true,
 		PersistentPostRun: func(_ *cobra.Command, _ []string) {
 			checkForUpdate()
@@ -78,7 +78,6 @@ func newRootCmd() *Command {
 	subCommands := []*cobra.Command{
 		newRuntrybotCmd(c),
 		newImportPRCmd(c),
-		newUnityCmd(c),
 		newReleaselogCmd(c),
 		newVersionCmd(c),
 		newMCPCmd(c),

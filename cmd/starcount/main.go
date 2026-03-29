@@ -14,8 +14,8 @@ import (
 )
 
 var (
-	fOldRepo = flag.String("old", "cuelang/cue", "old repo")
-	fNewRepo = flag.String("new", "cue-lang/cue", "old repo")
+	fOldRepo = flag.String("old", "EduWarp/eduwarp", "old repo")
+	fNewRepo = flag.String("new", "EduWarp/eduwarp", "new repo")
 )
 
 func main() {

@@ -33,19 +33,18 @@ var httpClient = &http.Client{
 func newMCPCmd(c *Command) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "mcp",
-		Short: "Run an MCP server exposing CUE project tools",
+		Short: "Run an MCP server exposing EduWarp project tools",
 		Long: `Run a Model Context Protocol (MCP) server over stdio.
 
-This exposes CUE project tools (Slack thread fetching, Discord thread
-fetching, Gerrit comment fetching) as MCP tools that can be used by
-AI assistants like Claude Code.
+This exposes EduWarp project tools (Discord thread fetching, Gerrit
+comment fetching) as MCP tools that can be used by AI assistants like
+Claude Code.
 
 Add to Claude Code:
 
   claude mcp add --transport stdio --scope user cueckoo -- cueckoo mcp
 
 Environment variables:
-  SLACK_TOKEN     Slack Bot or User token (xoxb-... or xoxp-...)
   DISCORD_TOKEN   Discord Bot token
 `,
 		RunE: func(_ *cobra.Command, _ []string) error {
@@ -60,16 +59,6 @@ func runMCP(ctx context.Context) error {
 		Name:    "cueckoo",
 		Version: "v0.1.0",
 	}, nil)
-
-	mcp.AddTool(server, &mcp.Tool{
-		Name: "slack_thread",
-		Description: `Fetch a Slack thread and return all messages with resolved usernames.
-
-Takes a Slack message URL (e.g. https://cuelang.slack.com/archives/C012UU8B72M/p1234567890123456)
-and returns all messages in that thread, with user IDs resolved to display names.
-
-Requires SLACK_TOKEN environment variable.`,
-	}, handleSlackThread)
 
 	mcp.AddTool(server, &mcp.Tool{
 		Name: "discord_thread",
@@ -127,7 +116,7 @@ for checkout, cherry-pick, diff, or any other git operation.
 
 The change argument can be:
 
-  A Gerrit URL         — e.g. https://cue.gerrithub.io/c/cue-lang/cue/+/1233920
+  A Gerrit URL         — e.g. https://review.gerrithub.io/c/EduWarp/eduwarp/+/1233920
   cl:<number>          — CL number, e.g. cl:1233920
   changeid:<id>        — Change-Id, e.g. changeid:Ia15e97465869aa18ba2b8c9795cec18f438d7b76
   git:<ref>            — any git ref, e.g. git:HEAD`,
@@ -146,7 +135,7 @@ review all draft comments and publish them.
 
 The change argument can be:
 
-  A Gerrit URL         — e.g. https://cue.gerrithub.io/c/cue-lang/cue/+/1233920
+  A Gerrit URL         — e.g. https://review.gerrithub.io/c/EduWarp/eduwarp/+/1233920
   cl:<number>          — CL number, e.g. cl:1233920
   changeid:<id>        — Change-Id, e.g. changeid:Ia15e97465869aa18ba2b8c9795cec18f438d7b76
   git:<ref>            — any git ref, e.g. git:HEAD
@@ -217,13 +206,13 @@ The change argument must use one of these prefixed formats:
 
 	mcp.AddTool(server, &mcp.Tool{
 		Name: "guidance",
-		Description: `Return the latest common guidance/instructions for CUE project repos.
+		Description: `Return the latest common guidance/instructions for EduWarp project repos.
 
 This returns canonical instructions that should be incorporated into each
 repo's CLAUDE.md file. It covers commit message conventions, GerritHub code
 review workflows (including git-codereview usage, working with commit chains,
 editing and splitting commits, and preserving Change-Ids), CI/trybots,
-community support, testing with txtar reproductions, and CLAUDE.md structure.
+testing with txtar reproductions, and CLAUDE.md structure.
 
 Call this tool when setting up a new repo or when asked to verify that
 a repo's instructions are current.`,

@@ -25,7 +25,7 @@ import (
 	"strings"
 
 	"github.com/andygrunwald/go-gerrit"
-	"github.com/cue-lang/contrib-tools/internal/codereviewcfg"
+	"github.com/EduWarp/contrib-tools/internal/codereviewcfg"
 	"github.com/google/go-github/v53/github"
 )
 
@@ -35,13 +35,8 @@ import (
 type eventType string
 
 const (
-	// NOTE: the values for trybot and unity must be consistent with the names
-	// defined in the cuelang.org/go/internal/ci/base package.
-	//
-	// TODO: refactor to sort out types.
 	eventTypeTrybot   eventType = "trybot"
 	eventTypeImportPR eventType = "importpr"
-	eventTypeUnity    eventType = "unity"
 )
 
 // config holds the configuration that is loaded from the codereview config
@@ -60,12 +55,6 @@ type config struct {
 
 	// githubRepo is the name of the GitHub repo
 	githubRepo string
-
-	// unityOwner is the organisation/user to which the unity repo belongs
-	unityOwner string
-
-	// unityRepo is the name of the unity repo
-	unityRepo string
 
 	// githubClient is the client for using the GitHub API
 	githubClient *github.Client
@@ -107,18 +96,6 @@ func loadConfig(ctx context.Context) (*config, error) {
 	res.githubOwner, res.githubRepo, err = codereviewcfg.GithubURLToParts(githubURL)
 	if err != nil {
 		return nil, fmt.Errorf("failed to derive GitHub owner and repo from %v: %v", githubURL, err)
-	}
-
-	// Unity configuration is optional.
-	// We check the "new" config entry first, as we transition to a single Unity entry in cue-lang/cue again.
-	for _, entry := range []string{"cue-unity-new", "cue-unity"} {
-		if unityURL := cfg[entry]; unityURL != "" {
-			res.unityOwner, res.unityRepo, err = codereviewcfg.GithubURLToParts(unityURL)
-			if err != nil {
-				return nil, fmt.Errorf("failed to derive unity owner and repo from %v: %v", unityURL, err)
-			}
-			break
-		}
 	}
 
 	// Prefer the manual env vars if both are set.

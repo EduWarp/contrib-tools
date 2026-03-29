@@ -22,21 +22,20 @@ import (
 )
 
 const (
-	flagRunTrybotNoUnity flagName = "nounity"
-	flagForce            flagName = "force"
+	flagForce flagName = "force"
 )
 
 // newRuntrybotCmd creates a new runtrybot command
 func newRuntrybotCmd(c *Command) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "runtrybot",
-		Short: "run the CUE trybot on the given CL",
+		Short: "run the EduWarp trybot on the given CL",
 		Long: `
 Usage of runtrybot:
 
-	runtrybot [--nounity] [ARGS...]
+	runtrybot [ARGS...]
 
-Triggers trybot and unity runs for its arguments.
+Triggers trybot runs for its arguments.
 
 When run with no arguments, runtrybot derives a revision and change ID for each
 pending commit in the current branch. If multiple pending commits are found,
@@ -48,12 +47,9 @@ with the "repo" scope. You can configure them via your git credential helper,
 or by setting the GITHUB_USER and GITHUB_PAT environment variables.
 Note that the personal access token should be "classic"; GitHub's new
 fine-grained tokens are still in beta and haven't been tested to work here.
-
-If the --nounity flag is provided, only a trybot run is triggered.
 `,
 		RunE: mkRunE(c, runtrybotDef),
 	}
-	cmd.Flags().Bool(string(flagRunTrybotNoUnity), false, "do not simultaenously trigger unity build")
 	cmd.Flags().BoolP(string(flagForce), string(flagForce[0]), false, "force the trybots to run, ignoring any results")
 	return cmd
 }
@@ -70,21 +66,7 @@ func runtrybotDef(cmd *Command, args []string) error {
 		if err != nil {
 			return err
 		}
-		if err := cfg.triggerRepositoryDispatch(cfg.githubOwner, cfg.githubRepo, p); err != nil {
-			return err
-		}
-		if cfg.unityRepo != "" && !flagRunTrybotNoUnity.Bool(cmd) {
-			unityPayload := payload
-			unityPayload.Type = string(eventTypeUnity)
-			p, err := buildUnityPayloadFromCLTrigger(unityPayload)
-			if err != nil {
-				return err
-			}
-			if err := cfg.triggerRepositoryDispatch(cfg.unityOwner, cfg.unityRepo, p); err != nil {
-				return err
-			}
-		}
-		return nil
+		return cfg.triggerRepositoryDispatch(cfg.githubOwner, cfg.githubRepo, p)
 	})
 	return r.run()
 }

@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// cueckoo is a development tool for working with the CUE project
+// cueckoo is a development tool for working with the EduWarp project
 package main
 
 import (
 	"os"
 
-	"github.com/cue-lang/contrib-tools/cmd/cueckoo/cmd"
+	"github.com/EduWarp/contrib-tools/cmd/cueckoo/cmd"
 )
 
 func main() {

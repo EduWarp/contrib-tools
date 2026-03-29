@@ -93,16 +93,16 @@ func resolveChangeWithRevision(arg string) (number, revision string, _ error) {
 }
 
 // resolveChangeURL extracts a change number and optional patchset from a
-// Gerrit URL like https://cue.gerrithub.io/c/cue-lang/cue/+/1233920 or
-// https://cue.gerrithub.io/c/cue-lang/cue/+/1233920/2.
+// Gerrit URL like https://review.gerrithub.io/c/EduWarp/eduwarp/+/1233920 or
+// https://review.gerrithub.io/c/EduWarp/eduwarp/+/1233920/2.
 func resolveChangeURL(rawURL string) (number, revision string, _ error) {
 	u, err := url.Parse(rawURL)
 	if err != nil {
 		return "", "", fmt.Errorf("parsing URL %q: %w", rawURL, err)
 	}
 
-	// The URL path looks like /c/cue-lang/cue/+/1233920 or
-	// /c/cue-lang/cue/+/1233920/2 (with optional patchset).
+	// The URL path looks like /c/EduWarp/eduwarp/+/1233920 or
+	// /c/EduWarp/eduwarp/+/1233920/2 (with optional patchset).
 	// The change number is the segment after "+", and the patchset
 	// (if present) is the segment after that.
 	parts := strings.Split(strings.Trim(u.Path, "/"), "/")

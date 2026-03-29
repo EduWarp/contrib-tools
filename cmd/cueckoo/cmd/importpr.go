@@ -183,7 +183,7 @@ func importPRDef(c *Command, args []string) error {
 
 	// Amend the squashed commit message manually.
 	// More often than not, we'll want to tweak commit messages to follow
-	// https://github.com/cue-lang/cue/blob/HEAD/doc/contribute.md#good-commit-messages.
+	// https://github.com/EduWarp/contrib-tools/blob/HEAD/doc/contribute.md#good-commit-messages.
 	// Moreover, if we squashed commits, a human needs to merge or discard their messages.
 	// Note that we forward stdin/out/err for terminal editors like vim.
 	// TODO: also add the PR title and description above the commit messages if

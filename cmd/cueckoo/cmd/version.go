@@ -32,7 +32,7 @@ const (
 	// checkInterval is how often we query the Go module proxy for a newer version.
 	checkInterval = 24 * time.Hour
 
-	moduleProxyURL = "https://proxy.golang.org/github.com/cue-lang/contrib-tools/@latest"
+	moduleProxyURL = "https://proxy.golang.org/github.com/EduWarp/contrib-tools/@latest"
 )
 
 func newVersionCmd(c *Command) *cobra.Command {
@@ -82,7 +82,7 @@ func checkForUpdate() {
 		fmt.Fprintf(os.Stderr, `
 cueckoo: a newer version is available: %s (current: %s)
 
-	go install github.com/cue-lang/contrib-tools/cmd/cueckoo@latest
+	go install github.com/EduWarp/contrib-tools/cmd/cueckoo@latest
 `[1:], info.Version, curVersion)
 	}
 }
