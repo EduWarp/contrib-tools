@@ -257,8 +257,9 @@ func gerritAPIRequest(method, path string, body any) ([]byte, error) {
 		req.Header.Set("Content-Type", "application/json")
 	}
 
-	// Look up credentials via git credential helper.
-	username, password, err := gitCredentials(context.Background(), fullURL)
+	// Look up credentials via git credential helper using only the base URL
+	// (host only), matching how git fetch resolves credentials.
+	username, password, err := gitCredentials(context.Background(), gerritBase)
 	if err != nil {
 		return nil, fmt.Errorf("no git credentials found for %s: %w (configure a git credential helper for GerritHub)", gerritBase, err)
 	}
