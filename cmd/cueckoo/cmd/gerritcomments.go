@@ -25,9 +25,15 @@ import (
 	"os/exec"
 	"slices"
 	"strings"
+	"sync"
+
+	"github.com/EduWarp/contrib-tools/internal/codereviewcfg"
 )
 
-const gerritBase = "https://review.gerrithub.io"
+
+// gerritBase returns the Gerrit server base URL from codereview.cfg.
+// The result is cached after the first call.
+var gerritBase = sync.OnceValues(codereviewcfg.GerritServer)
 
 // fetchGerritComments fetches review comments from a GerritHub change
 // and returns them formatted, grouped by thread with resolved state.
@@ -238,7 +244,11 @@ func gerritAPIGet(path string) ([]byte, error) {
 // If body is non-nil, it is JSON-marshaled and sent as the request body.
 // Accepts 200 or 201 as success status codes (Gerrit returns 201 for resource creation).
 func gerritAPIRequest(method, path string, body any) ([]byte, error) {
-	fullURL := gerritBase + path
+	base, err := gerritBase()
+	if err != nil {
+		return nil, fmt.Errorf("determining Gerrit server: %w", err)
+	}
+	fullURL := base + path
 
 	var reqBody io.Reader
 	if body != nil {
@@ -259,9 +269,9 @@ func gerritAPIRequest(method, path string, body any) ([]byte, error) {
 
 	// Look up credentials via git credential helper using only the base URL
 	// (host only), matching how git fetch resolves credentials.
-	username, password, err := gitCredentials(context.Background(), gerritBase)
+	username, password, err := gitCredentials(context.Background(), base)
 	if err != nil {
-		return nil, fmt.Errorf("no git credentials found for %s: %w (configure a git credential helper for GerritHub)", gerritBase, err)
+		return nil, fmt.Errorf("no git credentials found for %s: %w (configure a git credential helper for GerritHub)", base, err)
 	}
 	req.SetBasicAuth(username, password)
 

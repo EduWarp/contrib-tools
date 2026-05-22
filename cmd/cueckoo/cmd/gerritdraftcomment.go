@@ -67,7 +67,12 @@ func postGerritDraftComment(change, patchset, path string, line int, resolved bo
 		lineInfo = fmt.Sprintf(":%d", line)
 	}
 
-	gerritURL := fmt.Sprintf("%s/c/%s/%s", gerritBase, changeNumber, patchset)
+	base, err := gerritBase()
+	if err != nil {
+		return "", fmt.Errorf("determining Gerrit server: %w", err)
+	}
+
+	gerritURL := fmt.Sprintf("%s/c/%s/%s", base, changeNumber, patchset)
 
 	return fmt.Sprintf("Draft comment posted on %s%s. Draft ID: %s.\nReview drafts at: %s", path, lineInfo, created.ID, gerritURL), nil
 }

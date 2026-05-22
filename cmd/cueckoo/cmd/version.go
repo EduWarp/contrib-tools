@@ -141,7 +141,7 @@ func readProxyInfo(path string) (*proxyInfo, error) {
 }
 
 func fetchProxyInfo() ([]byte, error) {
-	resp, err := http.Get(moduleProxyURL)
+	resp, err := httpClient.Get(moduleProxyURL)
 	if err != nil {
 		return nil, err
 	}

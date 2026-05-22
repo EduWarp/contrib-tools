@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"net/url"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 )
@@ -88,4 +89,27 @@ func GithubURLToParts(urlString string) (string, string, error) {
 		return "", "", fmt.Errorf("unexpected URL format %q", urlString)
 	}
 	return pathSplit[1], pathSplit[2], nil
+}
+
+// GerritServer finds the git root of the current working directory,
+// reads the codereview.cfg file, and returns the Gerrit server base URL.
+func GerritServer() (string, error) {
+	cmd := exec.Command("git", "rev-parse", "--show-toplevel")
+	out, err := cmd.Output()
+	if err != nil {
+		return "", fmt.Errorf("failed to determine git root: %w", err)
+	}
+	root := strings.TrimSpace(string(out))
+
+	cfg, err := Config(root)
+	if err != nil {
+		return "", err
+	}
+
+	gerritURL := cfg["gerrit"]
+	if gerritURL == "" {
+		return "", fmt.Errorf("missing gerrit key in codereview.cfg")
+	}
+
+	return GerritURLToServer(gerritURL)
 }

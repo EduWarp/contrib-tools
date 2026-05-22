@@ -59,9 +59,14 @@ func fetchGerritChange(change string) (string, error) {
 		patchSet = rev.Number
 	}
 
-	fetchURL := fmt.Sprintf("%s/a/%s", gerritBase, detail.Project)
+	base, err := gerritBase()
+	if err != nil {
+		return "", fmt.Errorf("determining Gerrit server: %w", err)
+	}
 
-	gerritURL := fmt.Sprintf("%s/c/%s/+/%d/%d", gerritBase, detail.Project, detail.Number, patchSet)
+	fetchURL := fmt.Sprintf("%s/a/%s", base, detail.Project)
+
+	gerritURL := fmt.Sprintf("%s/c/%s/+/%d/%d", base, detail.Project, detail.Number, patchSet)
 
 	var b strings.Builder
 	fmt.Fprintf(&b, "Change: %d (patchset %d)\n", detail.Number, patchSet)
